@@ -1,22 +1,19 @@
+import { generateYAxis } from '@/app/lib/utils';
+import { CalendarIcon } from '@heroicons/react/24/outline';
 import { lusitana } from '@/app/ui/fonts';
 import { Revenue } from '@/app/lib/definitions';
-import { fetchRevenue } from '@/app/lib/data';
+
 // This component is representational only.
 // For data visualization UI, check out:
 // https://www.tremor.so/
 // https://www.chartjs.org/
 // https://airbnb.io/visx/
 
-// Define the generateYAxis function
-function generateYAxis(revenue: Revenue[]) {
-  // Example logic to generate yAxisLabels and topLabel
-  const yAxisLabels = revenue.map((item) => item.label);
-  const topLabel = yAxisLabels[yAxisLabels.length - 1];
-  return { yAxisLabels, topLabel };
-}
-
-export default async function RevenueChart() {
-  const revenue = await fetchRevenue();
+export default async function RevenueChart({
+  revenue,
+}: {
+  revenue: Revenue[];
+}) {
   const chartHeight = 350;
   // NOTE: Uncomment this code in Chapter 7
 
@@ -43,6 +40,24 @@ export default async function RevenueChart() {
               <p key={label}>{label}</p>
             ))}
           </div>
+
+          {revenue.map((month) => (
+            <div key={month.month} className="flex flex-col items-center gap-2">
+              <div
+                className="w-full rounded-md bg-blue-300"
+                style={{
+                  height: `${(chartHeight / topLabel) * month.revenue}px`,
+                }}
+              ></div>
+              <p className="-rotate-90 text-sm text-gray-400 sm:rotate-0">
+                {month.month}
+              </p>
+            </div>
+          ))}
+        </div>
+        <div className="flex items-center pb-2 pt-6">
+          <CalendarIcon className="h-5 w-5 text-gray-500" />
+          <h3 className="ml-2 text-sm text-gray-500 ">Last 12 months</h3>
         </div>
       </div>
     </div>
